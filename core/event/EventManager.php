@@ -2,7 +2,6 @@
 
 namespace core\event;
 
-
 use core\exception\ExceptionHandler;
 use core\validation\validators\ParamValidator;
 
@@ -10,11 +9,15 @@ class EventManager {
 
     private $exceptionHandler = null;
 
+    /**
+     * @var Event $event
+     */
     private $event      = null;
     private $parameters = null;
     private $paramValidator = null;
 
     private $validEvent = false;
+    private $canTrigger = false;
 
     public function getEvent($parameters) {
         if (is_array($parameters)) {
@@ -24,7 +27,8 @@ class EventManager {
                             ->validate();
             if ($proceed) {
                 $this->event = $this->create();
-                return $this->event;
+                $this->canTrigger = true;
+                return $this;
             }
             $this->getExceptionHandler()->throw(NOT_EXISTING_EVENT, [
                 'name' => $this->getEventName()
@@ -32,8 +36,10 @@ class EventManager {
         }
     }
 
-    public function trigger($parameters = null) {
-
+    public function trigger() {
+        if ($this->canTrigger) {
+            $this->event->trigger();
+        }
     }
 
     public function getEventName() {

@@ -1,10 +1,8 @@
 {
   "autoload": {
     "psr-4": {
-      "core\\": "core"
-    },
-    "files": [
-      "config/config.php"
-    ]
+      "core\\": "core",
+      "": ""
+    }
   }
 }
