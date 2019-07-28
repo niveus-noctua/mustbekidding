@@ -2,7 +2,8 @@
 namespace core\event\events;
 use core\Config;
 use core\event\Event as Event;
-use core\validation\validators\RequestValidator;
+use core\service\Service;
+use core\service\services\ValidatorService;
 
 
 class RouteEvent extends Event {
@@ -45,7 +46,8 @@ class RouteEvent extends Event {
 
     private function getRequestValidator() {
         if (is_null($this->requestValidator)) {
-            return new RequestValidator();
+            $this->requestValidator = ValidatorService::get('request', Service::SERVICE);
+            return $this->requestValidator;
         }
         return $this->requestValidator;
     }

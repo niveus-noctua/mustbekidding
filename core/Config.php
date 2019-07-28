@@ -14,8 +14,8 @@ class Config {
      * @return array
      */
     public static function global() {
-        $config = require_once 'config/config.php';
-        if ($config) return $config;
+        $config = include 'config/config.php';
+        if (!is_null($config)) return $config;
     }
 
     /**
@@ -25,8 +25,8 @@ class Config {
      * @return array
      */
     public static function local() {
-        $config = require_once './config/config.php';
-        if ($config) return $config;
+        $config = include './config/config.php';
+        if (!is_null($config)) return $config;
     }
 
 }

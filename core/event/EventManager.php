@@ -3,7 +3,8 @@
 namespace core\event;
 
 use core\exception\ExceptionHandler;
-use core\validation\validators\ParamValidator;
+use core\service\Service;
+use core\service\services\ValidatorService;
 
 class EventManager {
 
@@ -58,7 +59,7 @@ class EventManager {
 
     private function getParamValidator() {
         if (is_null($this->paramValidator)) {
-            $this->paramValidator = new ParamValidator();
+            $this->paramValidator = ValidatorService::get('param', Service::SERVICE);
         }
         return $this->paramValidator;
     }
