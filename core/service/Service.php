@@ -45,7 +45,7 @@ class Service extends AbstractService {
 
     }
 
-    private function find($name, $classMap, $options = null) {
+    private static function find($name, $classMap, $options = null) {
         if (!is_null($options)) {
             $updateOnAction = false;
             /**
@@ -89,7 +89,7 @@ class Service extends AbstractService {
 
     }
 
-    private function clean() {
+    private static function clean() {
         self::$classMap = [];
     }
 

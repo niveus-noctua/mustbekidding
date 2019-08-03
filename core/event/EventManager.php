@@ -26,7 +26,7 @@ class EventManager {
             $this->validEvent = $proceed = $this->getParamValidator()
                             ->init($parameters)
                             ->validate();
-            if ($proceed) {
+            if ($proceed['result']) {
                 $this->event = $this->create();
                 $this->canTrigger = true;
                 return $this;

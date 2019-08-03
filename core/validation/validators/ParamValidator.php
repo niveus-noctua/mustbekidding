@@ -2,6 +2,7 @@
 
 namespace core\validation\validators;
 
+use core\service\ServiceManager;
 use core\validation\Validator;
 
 /**
@@ -24,7 +25,9 @@ class ParamValidator extends Validator {
     //      в дальнейшем изменить
     public function validate() {
 
-        $this->setResult(true);
+        $sm = new ServiceManager();
+        $exceptionService = $sm->get('exception_service');
+        $this->setResult(['result' => true]);
 
         return parent::validate();
     }

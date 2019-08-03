@@ -1,6 +1,7 @@
 <?php
 namespace core\event\events;
 use core\Config;
+use core\controller\AbstractController;
 use core\event\Event as Event;
 use core\service\Service;
 use core\service\services\ValidatorService;
@@ -14,9 +15,9 @@ class RouteEvent extends Event {
 
     private $requestValidator = null;
 
+    private $module = null;
     private $object = null;
     private $action = null;
-    private $params = null;
 
     public function __construct() {
         $this->init();
@@ -26,17 +27,49 @@ class RouteEvent extends Event {
         $this->cfg     = $this->getConfig();
         $this->host    = $this->cfg['host'];
         $this->request = $this->cfg['request'];
+
         $proceed = $this->getRequestValidator()
                         ->init($this->request)
                         ->validate();
-        if ($proceed) {
+        if ($proceed['result']) {
             $request      = $this->trim($this->request);
-            $this->params = $this->getParams($request);
-            $this->object = $this->getObject($request);
-            $this->action = $this->getAction($request);
+            $request      = $this->prepare($request);
 
-            $object = 'routes\\' . $this->object;
-            $this->object = new $object();
+            $this->module = $request['module'];
+            $this->object = $request['object'];
+            $this->action = $request['action'];
+
+            $this->object = new $this->object;
+        } else {
+            $userConfig = Config::local();
+            if (array_key_exists('router', $userConfig)) {
+                $userRouterOptions = $userConfig['router'];
+                if (array_key_exists('defaults', $userRouterOptions)) {
+                    $defaults = $userRouterOptions['defaults'];
+                    $module = $defaults['module'];
+                    $object = $defaults['controller'];
+                    $action = $defaults['action'];
+                    if (!is_null($module) && !is_null($object) && !is_null($action)) {
+                        $className = 'module\\' . $module . '\\controller\\' . ucfirst($object) . 'Controller';
+                        $action    = $action . 'Action';
+                        if (class_exists($className)) {
+                            $object = new $className;
+                            if (method_exists($object, $action) && $object instanceof AbstractController) {
+                                $this->object = $object;
+                                $this->action = $action;
+                            }
+                        }
+                    }
+
+                }
+            } else {
+                $object = 'core\\controller\\routes\\' . ucfirst($this->cfg['router']['defaults']['controller']) . 'Controller';
+                $action = $this->cfg['router']['defaults']['action'] . 'Action';
+
+                $this->object = new $object;
+                $this->action = $action;
+            }
+
         }
     }
 
@@ -59,23 +92,19 @@ class RouteEvent extends Event {
         return $request;
     }
 
-    private function getObject($request) {
-        $object = explode('/', $request);
-        $object = array_shift($object);
-        return ucfirst($object) . 'Controller';
+    private function prepare($request) {
+        $request = explode('/', $request);
+        $request_prepared['module'] = $request[0];
+        $request_prepared['object'] = 'module\\'
+            . $request_prepared['module']
+            . '\\controller\\'
+            . ucfirst($request[1]) .  'Controller';
+        $request_prepared['action'] = $request[2] . 'Action';
+        return $request_prepared;
     }
 
-    private function getAction($request) {
-        $action = array_pop(explode('/', $request));
-        return $action . 'Action';
-    }
+    private function getModule($request) {
 
-    private function getParams($request) {
-        $params = explode('?', $request);
-        if (is_array($params)) {
-            $params = array_pop($params);
-            return $params;
-        }
     }
 
     public function trigger() {

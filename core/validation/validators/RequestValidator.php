@@ -15,7 +15,7 @@ class RequestValidator extends Validator {
     public function validate() {
         $sm = new ServiceManager();
         $exceptionService = $sm->get('exception_service');
-        $this->setResult(true);
+        $this->setResult(['result' => true]);
         return parent::validate();
     }
 

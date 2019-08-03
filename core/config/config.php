@@ -5,6 +5,7 @@ return [
     'request' => $_SERVER['REQUEST_URI'],
     'root'    => $_SERVER['DOCUMENT_ROOT'] . '/../',
     'class_map' => [
-        'exception_service' => 'core\service\services\ExceptionService'
+        'exception_service' => 'core\service\services\ExceptionService',
+        'validator_service' => 'core\service\services\ValidatorService'
     ]
 ];
