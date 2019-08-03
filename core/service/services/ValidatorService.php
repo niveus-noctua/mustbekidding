@@ -17,7 +17,7 @@ class ValidatorService extends Service {
     }
 
     protected static function overrideClassmap(){
-        parent::$global['class_map'] = self::serviceClassmap();
+        parent::$classMap = self::serviceClassmap();
     }
 
     protected static function serviceClassmap() {

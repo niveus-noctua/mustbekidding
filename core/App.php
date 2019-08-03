@@ -17,7 +17,20 @@ class App {
     public function init($options = null) {
         $this->options = $options;
         $this->router  = new Router();
+        $this->loadConfigs();
         return $this;
+    }
+
+    public function loadConfigs() {
+        /**
+         * services
+         */
+        require_once 'service/config/service.exceptions.php';
+
+        /**
+         * events
+         */
+        require_once 'event/config/event.exceptions.php';
     }
 
     public function run() {

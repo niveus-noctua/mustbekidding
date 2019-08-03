@@ -25,7 +25,7 @@ class Config {
      * @return array
      */
     public static function local() {
-        $config = include './config/config.php';
+        $config = include self::global()['root'] . '/config/config.php';
         if (!is_null($config)) return $config;
     }
 

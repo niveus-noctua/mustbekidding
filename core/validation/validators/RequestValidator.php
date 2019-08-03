@@ -3,6 +3,7 @@
 namespace core\validation\validators;
 
 
+use core\service\ServiceManager;
 use core\validation\Validator;
 
 class RequestValidator extends Validator {
@@ -12,6 +13,8 @@ class RequestValidator extends Validator {
     }
 
     public function validate() {
+        $sm = new ServiceManager();
+        $exceptionService = $sm->get('exception_service');
         $this->setResult(true);
         return parent::validate();
     }
