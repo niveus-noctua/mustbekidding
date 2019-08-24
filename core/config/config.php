@@ -7,5 +7,8 @@ return [
     'class_map' => [
         'exception_service' => 'core\service\services\ExceptionService',
         'validator_service' => 'core\service\services\ValidatorService'
+    ],
+    'events' => [
+        'route' => 'core\event\events\RouteEvent'
     ]
 ];

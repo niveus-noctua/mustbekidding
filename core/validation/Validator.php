@@ -6,9 +6,11 @@ namespace core\validation;
 
 class Validator extends AbstractValidator {
 
-    private $result;
+    private $result = null;
+    private $value  = null;
 
     public function init($value) {
+        $this->value = $value;
         return $this;
     }
 
@@ -18,6 +20,15 @@ class Validator extends AbstractValidator {
 
     protected function setResult($result) {
         $this->result = $result;
+    }
+
+    /**
+     * returns value for validation
+     *
+     * @return |null
+     */
+    protected function getValue() {
+        return $this->value;
     }
 
 }

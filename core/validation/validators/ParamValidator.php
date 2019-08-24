@@ -2,39 +2,82 @@
 
 namespace core\validation\validators;
 
+use core\Config;
 use core\service\ServiceManager;
+use core\service\services\ExceptionService;
 use core\validation\Validator;
 
-/**
- * TODO: Валидатор должен:
- *          - валидировать наличие обязательных параметров
- *          - валидировать существование класса ивента
- *          - валидация класса ивента должна происходить в зависимости
- *            от того принадлежит ли ивент пользователю, либо же является
- *            служебным
- */
-
 class ParamValidator extends Validator {
+
+    private $isService = true;
 
     public function init($value) {
 
         return parent::init($value);
     }
 
-    //TODO: пока явно передаю true для проверки,
-    //      в дальнейшем изменить
     public function validate() {
 
         $sm = new ServiceManager();
+        /** @var ExceptionService $exceptionService */
         $exceptionService = $sm->get('exception_service');
-        $this->setResult(['result' => true]);
+
+        $value = $this->getValue();
+
+        if (array_key_exists('name', $value)) {
+
+            $eventName = $value['name'];
+
+            $isService = false;
+            if (array_key_exists('service', $value)) {
+                $isService = $value['service'];
+            }
+
+            $this->isService = $isService;
+
+            if (!$this->eventExists($eventName, $isService)) {
+                $this->setResult(['result' => false]);
+                $exceptionService->log();
+            }
+
+            $this->setResult(['result' => true]);
+        } else {
+            $exceptionService->log();
+            $this->setResult(['result' => false]);
+        }
 
         return parent::validate();
     }
 
-    //TODO: пока возвращает явно true,
-    //      должна быть проверка есть ли в параметрах
-    //      ключ массива 'service'
+    private function eventExists($eventName, $isService) {
+
+        if ($isService) {
+            $config = Config::global();
+            if (array_key_exists($eventName, $config['events'])) {
+                //получаем нэймспейс ивента
+                $event_namespace = $config['events'][$eventName];
+                if (class_exists($event_namespace)) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        $config = Config::local();
+        if (array_key_exists($eventName, $config['events'])) {
+            $event_namespace = $config['events'][$eventName];
+            if (class_exists($event_namespace)) {
+                return true;
+            }
+        }
+
+        $eventDefault = 'events\\' . ucfirst($eventName) . 'Event';
+        if (class_exists($eventDefault)) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Возвращает true если ивент является
@@ -43,7 +86,7 @@ class ParamValidator extends Validator {
      * @return bool
      */
     public function isService() {
-        return true;
+        return $this->isService;
     }
 
 }

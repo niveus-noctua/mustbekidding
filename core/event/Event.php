@@ -12,7 +12,6 @@ class Event extends AbstractEvent {
         if (is_null($this->action)) {
             return;
         }
-        //if ()
     }
 
 }

@@ -28,4 +28,8 @@ class ExceptionService extends Service {
         ];
     }
 
+    public function log() {
+
+    }
+
 }

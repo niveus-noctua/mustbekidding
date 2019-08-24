@@ -8,7 +8,8 @@ use core\event\EventManager;
 class Router {
 
     private $config = [
-        'name' => 'route'
+        'name' => 'route',
+        'service' => 'true'
     ];
 
     public function __construct() {

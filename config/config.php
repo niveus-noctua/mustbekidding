@@ -7,5 +7,8 @@ return [
             'controller' => 'index',
             'action'     => 'index'
         ]
+    ],
+    'events' => [
+        'route' => 'events\RouteEvent'
     ]
 ];
