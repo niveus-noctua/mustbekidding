@@ -19,11 +19,8 @@ class RouteEvent extends Event {
     private $object = null;
     private $action = null;
 
-    public function __construct() {
-        $this->init();
-    }
 
-    private function init() {
+    public function init() {
         $this->cfg     = $this->getConfig();
         $this->host    = $this->cfg['host'];
         $this->request = $this->cfg['request'];

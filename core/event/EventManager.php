@@ -54,7 +54,9 @@ class EventManager {
         $name     = $this->getEventName();
         $location = $this->getEventLocation();
         $event    = $location . $name;
-        return new $event();
+        $eventObject = new $event();
+        $eventObject->init();
+        return $eventObject;
     }
 
     private function getParamValidator() {

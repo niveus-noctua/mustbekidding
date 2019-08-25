@@ -3,6 +3,7 @@
 namespace core\validation\validators;
 
 use core\Config;
+use core\event\Event;
 use core\service\ServiceManager;
 use core\service\services\ExceptionService;
 use core\validation\Validator;
@@ -56,7 +57,7 @@ class ParamValidator extends Validator {
             if (array_key_exists($eventName, $config['events'])) {
                 //получаем нэймспейс ивента
                 $event_namespace = $config['events'][$eventName];
-                if (class_exists($event_namespace)) {
+                if (class_exists($event_namespace) && new $event_namespace instanceof Event) {
                     return true;
                 }
                 return false;
@@ -66,13 +67,13 @@ class ParamValidator extends Validator {
         $config = Config::local();
         if (array_key_exists($eventName, $config['events'])) {
             $event_namespace = $config['events'][$eventName];
-            if (class_exists($event_namespace)) {
+            if (class_exists($event_namespace) && new $event_namespace instanceof Event) {
                 return true;
             }
         }
 
         $eventDefault = 'events\\' . ucfirst($eventName) . 'Event';
-        if (class_exists($eventDefault)) {
+        if (class_exists($eventDefault) && new $eventDefault instanceof Event) {
             return true;
         }
 
