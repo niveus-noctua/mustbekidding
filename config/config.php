@@ -10,5 +10,9 @@ return [
     ],
     'events' => [
         'route' => 'events\RouteEvent'
+    ],
+    'site_preferences' => [
+        'mode' => 'developer',
+        'display_errors' => false
     ]
 ];
